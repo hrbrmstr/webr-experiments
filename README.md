@@ -2,7 +2,7 @@
 
 >Before you read this, please reconsider your life choices and wait for WASM Shiny to support WebR like it does Pyodide if you really want Reactive apps.
 >
->If you're still reading, also consider using React.George has an example of that in the docs and in the WebR repo. I despise giant web frameworks and always try to do what I can in VanillaJS and D3 (or Observable) if at all possible. But, I'm also pretty messed up.
+>If you're still reading, also consider using React. George (et al.) has an example of that in the docs and in the WebR repo. I despise giant web frameworks and always try to do what I can in VanillaJS and D3 (or Observable) if at all possible. But, I'm also pretty messed up.
 >
 >If you are _still_ reading, consider [using this awesome WebR Quarto extension](https://github.com/coatless/quarto-webr) instead.
 >
@@ -62,6 +62,8 @@ I went back and re-added that to these to make them faster.
 "Dashboard" b/c someone requested it. — <https://rud.is/webr-dash/no-dplyr.html>
 
 This one uses {dplyr}++ and was originally _super slow_ until George gave me a hack that I'll show in a bit. All the R code for it the support file.
+
+R does tons more heavy lifting in this, and there are JS wrappers to WebR calls to pull things from R. Def a poor dude's Shiny/React setup.
 
 `no-dplyr.html` + `support-no-dplyr.r`
 
