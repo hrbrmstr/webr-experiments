@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebR Super Simple Demo</title>
+<link rel="stylesheet" href="/style.css" type="text/css">
+
+<style>
+#vis {
+	background-color: white;
+	padding: 40;
+}
+</style>
+
+</head>
+<body>
+<div id="main">
+
+<p>
+	Another quick/small demo. This one:
+	<ul>
+		<li>Loads a package ({jsonlite})</li>
+		<li>Yanks <code>mtcars</code> from the WebR session</li>
+		<li>Converts it to JSON b/c what WebR returns is garbage for JS datavis libraries and I don't have time rn to write a function to do the transform.</li>
+		<li>Passes it to Observable Plot for the datavis.</li>
+	</ul>
+<p>
+
+<p>I <i>promise</i> something will be below this line soon.</p>
+
+<div id="vis"></div>
+
+<script type="module">
+
+  import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
+
+	import { WebR } from '/webr-d3-demo/webr.mjs'; 
+
+  globalThis.webR = new WebR(); 
+
+  await globalThis.webR.init(); 
+	globalThis.webRCodeShelter = await new globalThis.webR.Shelter();
+	await globalThis.webR.installPackages(['jsonlite'])
+
+	console.log("WebR"); 
+
+  let result = await globalThis.webR.evalR(`jsonlite::toJSON(mtcars)`);
+  let output = await result.toJs();
+	
+	let mtcars = JSON.parse(output.values)
+
+	document.getElementById("vis").append(
+		Plot.plot({
+			width: 600,
+			height: 600,
+      grid: true,
+			style: {
+        background: "white",
+        color: "black"
+      },
+			x: {
+				label: "Fuel consumption (miles per gallon) →"
+			},		
+			y: {
+				label: "Weight (tons)"
+			},
+      marks: [
+        Plot.dot(mtcars, {x: "wt", y: "mpg"})
+      ]
+  	})
+	)
+
+</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebR Super Simple Demo</title>
+<link rel="stylesheet" href="/style.css" type="text/css">
+<style>
+li {
+  font-family:monospace;
+}
+.nospace {
+  margin-bottom: 2px;
+}
+</style>
+</head>
+<body>
+<div id="main">
+<p>Simple demo to show the basics of calling the new WebR WASM!!!!</p>
+
+<p><code>view-source</code> to see how the sausage is made</code></p>
+
+<p class="nospace">Input a number, press "Call R" (when it is enabled) and magic will happen.</p>
+
+<!-- We'll pull the value from here -->
+<input type="text" id="x" value="10">
+
+<!-- This button is disabled until WebR is loaded -->
+<button disabled="" id="callr">Call R</button>
+
+<!-- Output goes here -->
+<div id="output"></div>
+
+<!-- WebR is a module so you have to do this. -->
+<!-- NOTE: Many browsers will not like it if `.mjs` files are served -->
+<!-- with a content-type that isn't text/javascript  -->
+<!-- Try renaming it from .mjs to .js if you hit that snag. -->
+
+<script type="module">
+
+  // https://github.com/r-wasm/webr/releases/download/v0.1.0/webr-0.1.0.tar.gz
+  //
+  // I was lazy and just left it in one directory
+
+	import { WebR } from '/webr-d3-demo/webr.mjs'; // service workers == full path starting with /
+
+	const webR = new WebR(); // get ready to Rumble 
+
+  await webR.init(); // shot's fired
+
+	console.log("WebR"); // just for me b/c I don't trust anything anymore
+
+  // we call this function on the button press
+
+	async function callR() {
+
+		let x = document.getElementById('x').value.trim(); // get the value we input; be better than me and do validation
+		console.log(`x = ${x}`) // as noted, i don't trust anything
+
+    let result = await webR.evalR(`rnorm(${x},5,1)`); // call some R!
+    let output = await result.toArray(); // make the result something JS can work with
+
+		document.getElementById("output").replaceChildren() // clear out the <div> (this is ugly; be better than me)
+
+    // d3 ops
+
+		d3.select("#output").append("ul")
+
+		const ul = d3.select("ul")
+
+		ul.selectAll("li")
+			.data(output)
+			.enter()
+			.append("li")
+			.text(d => d)
+
+	}
+
+  // by the time we get here, WebR is ready, so we tell the button what to do and re-enable the button
+	document.getElementById('callr').onclick = callR;
+	document.getElementById('callr').disabled = false;
+
+
+</script>
+
+<!-- d/l from D3 site or here if you trust me -->
+<script src="d3.min.js"></script>
+
+</div>
+</body>
+</html>

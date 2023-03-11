@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+ 
+<title>WebR Dash</title>
+ 
+<link rel="stylesheet" href="app.css">
+
+<style>
+#time {
+	font-family: monospace;
+}
+</style>
+
+</head>
+
+<body>
+
+<body data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-layout="default">
+	
+	<div class="wrapper">
+
+		<div class="main">
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					<div class="row mb-1 mb-xl-2">
+						<div class="col-auto d-none d-sm-block">
+							<h3><strong>WebR</strong> Dashboard <span id="state" class="badge rounded-pill bg-secondary">Loading…</span></h3>
+							<h6>NOTE: this page can be slow if the upstream wasm package server is busy. Try <a href="https://rud.is/webr-dash/no-dplyr.html">this</a> insted.</h6>
+						</div>
+						<div class="float-end">
+							<form class="row g-2">
+								<div class="col-auto">
+									<select id="month" class="form-select form-select-lg mb-3">
+									</select>
+								</div>
+							</form>
+						</div>
+					</div> <!-- row -->
+
+					<div class="row">
+						<div class="col-xl-3 d-flex">
+							<div class="w-100">
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Social</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="align-middle" data-feather="twitter"></i>
+														</div>
+													</div>
+												</div>
+												<h1 id="social" class="mt-1 mb-3">&nbsp;</h1>
+												<div class="mb-0">
+													<span class="badge badge-primary-light"> <i class="mdi mdi-arrow-bottom-right"></i> -3.65% </span>
+													<span class="text-muted">Total Visits</span>
+												</div>
+											</div>
+										</div>
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Other</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="align-middle" data-feather="aperture"></i>
+														</div>
+													</div>
+												</div>
+												<h1 id="other" class="mt-1 mb-3">&nbsp;</h1>
+												<div class="mb-0">
+													<span class="badge badge-success-light"> <i class="mdi mdi-arrow-bottom-right"></i> 5.25% </span>
+													<span class="text-muted">Total Visits</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xl-9">
+							<div class="card flex-fill w-100">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Daily Traffic</h5>
+								</div>
+								<div class="card-body pt-2 pb-3">
+									<div class="chart chart-sm">
+										<canvas id="chartjs-line"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div> <!-- row -->
+
+					<div class="row">
+						<div class="col-2"></div>
+						<div class="col-8">
+							<center><p>It took <span id="#time" class="badge bg-secondary">… ms</span> to load WebR, required packages, and the R code that powers the ops.</p></center>
+							<p>This is a sample VannilaJS (well, with a <i>touch</i> of d3 and Chart.js) WebR "dashboard" app.</p>
+							<p>You can thank <a href="https://adminkit.io/">AdminKit</a> (a free Bootstrap 5 dashboard theme kit) for this example looking nicer than all the previous ones.</p>
+							<p>When "Loading…" turns <span class="text-success">green</span>, the dashboad is ready to do.</p>
+							<p>It's displaying some hacked together "monthly visit" stats by type.</p>
+							<p>WebR does all the data work — including reading a remote CSV file. We even use {dplyr} for data ops, which means this will take a bit longer to load.</p>
+							<p>You can see the packages loading in the Developer Tools console.</p>
+							<p>There is a supporting R script — <code>https://rud.is/webr-dash/support.r</code> with 99% of the R code that is used in this app.</p>
+							<p>There is no documentation, yet, but there are only two files to read through, and I've tried to keep source formatting breathable, and keep any of my personal JS/R shortcut hacks, which I use when riffing, to a minimum.</p>
+						</div>
+						<div class="col-2"></div>
+					</div> <!-- row -->
+
+				</div>
+			</main>
+		</div>
+	</div>
+
+<script type="module">
+
+console.time('Execution Time');
+const timerStart = performance.now();
+
+//=== JS utils ===
+
+function ready_state() {
+	let state = document.getElementById("state");
+	state.setAttribute('class', 'badge rounded-pill bg-success');
+	state.textContent = "Ready";
+}
+
+function selected_month() {
+	return (d3.select('select#month').property('value'));
+}
+
+async function update_social_total(val) {
+	d3.select("#social").text(val);
+}
+
+async function update_other_total(val) {
+	d3.select("#other").text(val);
+}
+
+async function change_month() {
+
+  let month = selected_month();
+
+  let data = await get_data_for_month_year(month);
+
+  update_social_total(data.social_total);
+	update_other_total(data.other_total);
+
+	if (!initial) {
+	chart.data = {
+			labels: data.xlabs,
+			datasets: [{
+				label: "Reads",
+				fill: true,
+				backgroundColor: gradientLight,
+				borderColor: window.theme.primary,
+				data: data.yvals
+			}]
+		}
+
+	chart.update();
+	}
+	
+	initial = false;
+
+}
+
+async function setup_months() {
+	
+	const months = await available_months();
+
+	const select = d3.select("#month")
+		.on("change", change_month);
+
+	const options = select.selectAll('option')
+		.data(months)
+		.enter()
+		.append("option")
+		.text(d => d);
+
+}
+
+async function setup_chartjs() {
+
+	const data = await get_data_for_month_year(selected_month())
+
+	// Line chart
+	var chart = new Chart(document.getElementById("chartjs-line"), {
+		type: "line",
+		data: {
+			labels: data.xlabs,
+			datasets: [{
+				label: "Reads",
+				fill: true,
+				backgroundColor: gradientLight,
+				borderColor: window.theme.primary,
+				data: data.yvals
+			}]
+		},
+		options: {
+			maintainAspectRatio: false,
+			legend: {	display: false },
+			tooltips: {	intersect: false },
+			hover: { intersect: true },
+			plugins: { filler: { propagate: false	}	},
+			scales: {	
+				xAxes: [{	reverse: true, gridLines: {	color: "rgba(0,0,0,0.0)" } }],
+				yAxes: [{ ticks: { stepSize: 1000	}, display: true, borderDash: [3, 3], gridLines: { color: "rgba(0,0,0,0.0)", fontColor: "#fff" } }]
+			}
+		}
+	});
+
+	return Promise.resolve(chart);
+
+}
+
+//=== R JS wrappers ===
+
+async function evalr(r_code) {
+	return Promise.resolve(await globalThis.webR.evalR(r_code));
+}
+
+async function setup_r_env() {
+	return Promise.resolve(await globalThis.webR.evalRVoid(`source("https://rud.is/webr-dash/support.r")`));
+}
+
+async function setup_data() {
+	return Promise.resolve(globalThis.webR.evalRVoid(`setup_data()`));
+}
+
+async function available_months() {
+	let res = await evalr(`available_months`);
+	var out = await res.toJs();
+	return Promise.resolve(out.values);
+}
+
+async function get_data_for_month_year(month_year) {
+
+	let res = await evalr(`get_data_for_month_year("${month_year}")`);
+  let out = await res.toJs();
+	let data = out.values;
+
+  return Promise.resolve({
+		social_total: data[0].values[0].values[0],
+		other_total: data[0].values[1].values[0],
+		xlabs: data[1].values,
+		yvals: data[2].values
+	});
+
+}
+
+//=== module "globals ===
+
+var initial = true;
+
+var ctx = document.getElementById("chartjs-line").getContext("2d");
+var gradientLight = ctx.createLinearGradient(0, 0, 0, 225);
+gradientLight.addColorStop(0, "rgba(215, 227, 244, 1)");
+gradientLight.addColorStop(1, "rgba(215, 227, 244, 0)");
+
+//=== WebR setup ===
+
+import { WebR } from '/webr-dash/webr.mjs'; 
+
+globalThis.webR = new WebR(); 
+
+await globalThis.webR.init(); 
+globalThis.webRCodeShelter = await new globalThis.webR.Shelter();
+await globalThis.webR.installPackages(['dplyr'])
+
+//=== App setup ===
+
+await setup_r_env();
+
+await setup_data();
+
+await setup_months();
+
+var chart = await setup_chartjs();
+
+await change_month();
+
+ready_state();
+
+const timerEnd = performance.now();
+let timer = document.getElementById("#time");
+timer.textContent = `${d3.format(",")(timerEnd - timerStart)} ms`;
+console.timeEnd('Execution Time');
+
+</script>
+
+<script src="app.js"></script>
+<script src="d3.min.js"></script>
+<script src="d3-format.js"></script>
+
+</body>
+
+</html>

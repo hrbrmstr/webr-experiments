@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebR Super Simple Demo</title>
+<link rel="stylesheet" href="/style.css" type="text/css">
+
+<script src="vega.js"></script>
+<script src="vega-lite.js"></script>
+<script src="vega-embed.js"></script>
+
+<style>
+</style>
+
+</head>
+<body>
+<div id="main">
+
+<p>
+	Another quick/small demo. This one:
+	<ul>
+		<li>Yanks <code>mtcars</code> from the WebR session</li>
+		<li>Converts it to JS via WebR</li>
+		<li>Passes it to Vega-Lite for the datavis.</li>
+	</ul>
+<p>
+
+<p>I <i>promise</i> something will be below this line soon.</p>
+
+<div id="vis"></div>
+
+<script type="module">
+
+	function webRDFToJS(obj) {
+		return d3.range(0, obj.values[0].values.length).map((ridx) => {
+			let m = {};
+			for (var cidx = 0; cidx < obj.names.length; cidx++) {
+				m[obj.names[cidx]] = obj.values[cidx].values[ridx];
+			}
+			return m;
+		});
+	}
+
+	import { WebR } from '/webr-d3-demo/webr.mjs'; 
+
+  globalThis.webR = new WebR(); 
+
+  await globalThis.webR.init(); 
+	globalThis.webRCodeShelter = await new globalThis.webR.Shelter();
+
+	console.log("WebR"); 
+
+  let result = await globalThis.webR.evalR(`mtcars`);
+  let output = await result.toJs();
+	let output_t = webRDFToJS(output)
+
+	var mtcarsSpec = {
+		$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+		description: 'The scatterplot I always use to test new libs.',
+		"width": 400,
+    "height": 400,
+		data: {
+			values: output_t
+		},
+		mark: 'point',
+		encoding: {
+			x: {field: 'wt', type: 'quantitative'},
+			y: {field: 'mpg', type: 'quantitative'}
+		}
+	};
+
+	vegaEmbed('#vis', mtcarsSpec);
+
+</script>
+
+<script src="d3.min.js"></script>
+
+</div>
+</body>
+</html>

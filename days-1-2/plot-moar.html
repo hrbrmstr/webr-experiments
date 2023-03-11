@@ -1,0 +1,216 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebR Super Simple Demo</title>
+
+<link rel="stylesheet" href="/style.css" type="text/css">
+
+<style>
+#choosedf {
+	padding-bottom:10px;
+}
+#vis {
+	/* background-color: black; */
+	padding: 40px;
+}
+#tbl {
+	padding-top: 40px;
+	overflow-y: scroll;
+	height: 300px;
+  scrollbar-width: none;
+}
+#tbl::-webkit-scrollbar { 
+  display: none;
+}
+table {
+	font-family: monospace;
+}
+td {
+	text-align: right;
+}
+</style>
+
+</head>
+
+<body>
+<div id="main">
+
+<p>Another, slightly more complex example. This is a "reactive" app without all the cruft.</p>
+
+<p>Select a data frame from the dropdown menu. I've pre-selected columns to be plotted b/c I am tired.</p>
+
+<p><code>mtcars</code> and <code>iris</code> are pulled from the running WebR session.</p>
+
+<p>While the built in WebR session also has <code>USArrests</code>, I saved it to a CSV and put it at <code>https://rud.is/webr-d3-demo/us-arrests.csv</code>.</p>
+
+<p>WebR reads that into <code>usarrests</code>.</p>
+
+<p>Observable Plot does the plotting.</p>
+
+<p>The table is built with a custom function. The <code>&lt;div&gt;</code> it is in is scrollable. There are no scrollbars b/c I really am kind of tired and didn't feel like tweaking CSS (this page shld know if you're in dark mode or not).</p>
+
+<p>I <i>promise</i> something will be below this line soon.</p>
+
+<div id="choosedf"></div>
+
+<div id="vis"></div>
+
+<div id="tbl"></div>
+
+<script type="module">
+
+	function webRDFToJS(obj) {
+		return d3.range(0, obj.values[0].values.length).map((ridx) => {
+			let m = {};
+			for (var cidx = 0; cidx < obj.names.length; cidx++) {
+				m[obj.names[cidx]] = obj.values[cidx].values[ridx];
+			}
+			return m;
+		});
+	}
+
+  async function built_in_df_to_json(df) {
+		let result = await globalThis.webR.evalR(`${df}`);
+		let output = await result.toJs();
+		return(Promise.resolve(webRDFToJS(output)));
+	}
+
+  async function external_csv_to_json(url) {
+		let result = await globalThis.webR.evalR(`read.csv("${url}")`);
+		let output = await result.toJs();
+		return(Promise.resolve(webRDFToJS(output)));
+	}
+
+	function simple_table(data, columns) {
+
+    console.log("simple table");
+
+		document.getElementById("tbl").replaceChildren();
+
+		var table = d3.select('#tbl').append('table')
+		var thead = table.append('thead')
+		var	tbody = table.append('tbody');
+
+		// append the header row
+		thead.append('tr')
+			.selectAll('th')
+			.data(columns).enter()
+			.append('th')
+				.text(function (column) { return column; });
+
+		// create a row for each object in the data
+		var rows = tbody.selectAll('tr')
+			.data(data)
+			.enter()
+			.append('tr');
+
+		// create a cell in each row for each column
+		var cells = rows.selectAll('td')
+			.data(function (row) {
+				return columns.map(function (column) {
+					return {column: column, value: row[column]};
+				});
+			})
+			.enter()
+			.append('td')
+				.text(function (d) { return d.value; });
+
+		return table;
+  }
+
+	function change() {
+    let wat = d3.select('select').property('value');
+		replot(wat);
+  }
+
+	function replot(wat) {
+
+    let cfg = config.filter(d => d.name == wat)[0]
+
+		document.getElementById("vis").replaceChildren();
+		document.getElementById("vis").append(
+			Plot.plot({
+				width: 600,
+				height: 600,
+				grid: true,
+				style: {
+					background: "white",
+					color: "black"
+				},
+				x: {
+					label: cfg.columns[cfg.x]
+				},		
+				y: {
+					label: cfg.columns[cfg.y]
+				},
+				marks: [
+					Plot.dot(cfg.data, {x: cfg.columns[cfg.x], y: cfg.columns[cfg.y]})
+				]
+			})
+		)
+
+		simple_table(cfg.data, cfg.columns);
+
+	}
+
+  import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
+
+	import { WebR } from '/webr-d3-demo/webr.mjs'; 
+
+  globalThis.webR = new WebR(); 
+
+  await globalThis.webR.init(); 
+	globalThis.webRCodeShelter = await new globalThis.webR.Shelter();
+
+	console.log("WebR"); 
+
+  const mtcars = await built_in_df_to_json("mtcars");
+  const iris = await built_in_df_to_json("iris");
+	const usarrests = await external_csv_to_json("https://rud.is/webr-d3-demo/us-arrests.csv");
+
+	globalThis.mtcars = mtcars;
+
+	const config = [
+		{
+			name: "mtcars",
+			columns: Object.keys(mtcars[0]),
+			data: mtcars,
+			x: 5,
+			y: 0
+		},
+		{
+			name: "iris",
+			columns: Object.keys(iris[0]),
+			data: iris,
+			x: 2,
+			y: 3
+		},
+		{
+			name: "usarrests",
+			columns: Object.keys(usarrests[0]),
+			data: usarrests,
+			x: 2,
+			y: 3
+		}
+	];
+
+  let select  = d3.select("#choosedf")
+	                .append("select")
+									.on("change", change);
+
+	let options = select.selectAll('option')
+	                    .data(config)
+											.enter()
+											.append("option")
+											.text(d => d.name);
+
+	replot("mtcars");
+
+</script>
+
+<script src="d3.min.js"></script>
+
+</div>
+</body>
+</html>
