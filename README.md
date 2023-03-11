@@ -24,6 +24,14 @@ I was lazy and had like _everything_ in the same directory (WebR, JS, CSS, CSV, 
 
 Small demo that uses D3 to build a list from R object output — <https://rud.is/webr-d3-demo/>
 
+`pkgs.html`
+
+Plot `mtcars` with Vega-Lite.
+
+The file is named badly (it no longer relies on any R pkgs) but it's too late to change it now
+
+Just showing how to pass data to Vega from R. Chosen b/c Vega is super lightweight and the Vega specs are dope.
+
 `plot.html`
 
 Observable Plot demo — <https://rud.is/webr-d3-demo/plot.html>
@@ -84,7 +92,7 @@ Cross-Origin-Embedder-Policy: require-corp
 
 ## "Pro"tips
 
-Yeah, "pro". Sure.
+Yeah, "pro". _Sure._ More like "hrbrhacks". 
 
 ### Your DevTools Console Is Also Your R Console
 
