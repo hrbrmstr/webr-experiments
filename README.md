@@ -26,7 +26,7 @@ Small demo that uses D3 to build a list from R object output — <https://rud.is
 
 `pkgs.html`
 
-Plot `mtcars` with Vega-Lite.
+Plot `mtcars` with Vega-Lite. <https://rud.is/webr-d3-demo/pkgs.html>
 
 The file is named badly (it no longer relies on any R pkgs) but it's too late to change it now
 
