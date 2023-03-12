@@ -94,6 +94,14 @@ Cross-Origin-Embedder-Policy: require-corp
 
 Yeah, "pro". _Sure._ More like "hrbrhacks". 
 
+### JavaScript Modules
+
+WebR is a [JavaScript module](https://www.w3schools.com/js/js_modules.asp), and you need to make sure that files with an `mjs` extension have a [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) of `text/javascript`. A typical way for web servers to know how to communicate this is via a `mime.types` file. That is not true for all web servers, and I'll add steps for ones that use a different way to configure this. The entry should look like this:
+
+```
+text/javascript  mjs;
+```
+
 ### Your DevTools Console Is Also Your R Console
 
 Once WebR is initialized into `globalThis` (that's only one way to do it and that idiom is used in other examples), you can use it in the DevTools console:
