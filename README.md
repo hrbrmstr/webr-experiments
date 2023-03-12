@@ -96,6 +96,13 @@ Cross-Origin-Opener-Policy: same-origin
 Cross-Origin-Embedder-Policy: require-corp
 ```
 
+Also, this `Cache-Control` heading appears to help keep things under `/webr` (YMMV) in the browser cache longer, and will also let any ISP or enterprise proxies keep the files in their caches as well:
+
+```plain
+Cache-Control: public, max-age=604800
+```
+
+
 ## "Pro"tips
 
 Yeah, "pro". _Sure._ More like "hrbrhacks". 

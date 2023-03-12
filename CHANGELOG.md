@@ -4,6 +4,7 @@
 
 ### Added
 
+- info on adding cache headers to the webserver
 - submodule to another experiment
 - how to see what packages are available
 - information on the MIME type necessary to serve JavaScript modules properly.
