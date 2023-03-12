@@ -77,6 +77,12 @@ R does tons more heavy lifting in this, and there are JS wrappers to WebR calls 
 
 Same Dashboard but it's much faster, but that's kind of meaningless b/c the both load stupid fast now.
 
+## Day 4 (git [submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) `webr-app` in this repo)
+
+Made a full on, non-janky app with instructions on how to install webr site-wide. 
+
+<https://github.com/hrbrmstr/webr-app>
+
 ## TIL
 
 ### Headers

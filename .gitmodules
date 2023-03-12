@@ -1,0 +1,3 @@
+[submodule "webr-app"]
+	path = webr-app
+	url = git@github.com:hrbrmstr/webr-app

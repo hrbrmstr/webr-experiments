@@ -4,8 +4,9 @@
 
 ### Added
 
-- information on the MIME type necessary to serve JavaScript modules properly.
+- submodule to another experiment
 - how to see what packages are available
+- information on the MIME type necessary to serve JavaScript modules properly.
 
 ## 2023-03-21
 
