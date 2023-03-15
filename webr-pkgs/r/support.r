@@ -3,5 +3,3 @@ get_webr_packages <- function() {
   ap <- as.data.frame(ap)
   ap[, c("Package", "Version", "License")]
 }
-
-my_iris <- iris
