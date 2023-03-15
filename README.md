@@ -83,7 +83,100 @@ Made a full on, non-janky app with instructions on how to install webr site-wide
 
 <https://github.com/hrbrmstr/webr-app>
 
-## TIL
+## Day???? webr-pkgs
+
+The `webr-pkgs/` directory contains another small WebR-powered application that shows how to wrap an R function for calling from JS. You can [see it in action](https://rud.is/w/webr-pkgs/) before reading.
+
+Essentially, the app makes a live call to `base::available.packages()` from WebR and spits out a [Grid.js](https://gridjs.io/) table.
+
+```plain
+├── css
+│   ├── app.css               # app-specific CSS and alot of CSS for our Grid.js table
+│   └── simple.min.css        # an easy to use CSS framework
+├── index.html                # main app page
+├── main.js                   # our apps' main module
+├── modules
+│   ├── rsupport.js           # wrappers for things in "support.r"
+│   ├── webr-app.js           # app logic functions
+│   └── webr-helpers.js       # utility functions to work with WebR objects
+├── r
+│   └── support.r             # Our JS app's "R library"
+├── webr-serviceworker.js     # Part of WebR
+├── webr-serviceworker.js.map # helps DevTools find symbols
+├── webr-worker.js            # Part of WebR
+└── webr-worker.js.map        # helps DevTools find symbols
+```
+
+First, I tweaked the config to show how you can move the `.*serviceworker.*` files along for the ride with your apps. This is reflected in `main.js`:
+
+```js
+globalThis.webR = new WebR({
+	WEBR_URL: "/webr/",
+	SW_URL: "/w/webr-pkgs/"
+}); 
+```
+
+Next, `r/support.r` and `modules/support.js` are paired files (I've removed the JSDoc comments from `support.js` for brevity, here):
+
+```r
+get_webr_packages <- function() {
+  ap <- available.packages(repos = "https://repo.r-wasm.org/", type = "source")
+  ap <- as.data.frame(ap)
+  ap[, c("Package", "Version", "License")]
+}
+```
+
+```js
+import * as HelpR from "./webr-helpers.js"
+
+export async function getWebrPackages(ctx) {
+	return (Promise.resolve(await HelpR.evalRToJs(ctx, 'get_webr_packages()')))
+}
+```
+
+Think of `support.r` as your apps "R library package". Stick functions and data you want available in there. We `base::source()` that in `main.js`:
+
+```js
+await HelpR.sourceRScript(globalThis.webR, "https://rud.is/w/webr-pkgs/r/support.r")
+```
+
+>NOTE: we could have embedded that R script right into the module as a JavaScript string to avoid another HTTP transaction. I'll show an example of that next time.
+
+After the app is fully initialized, we make a call to populate the Grid.js table:
+
+```js
+App.packagesToGrid(globalThis.webR, "tbl");
+```
+
+Inside `packagesToGrid()` is the call to `RSupport.getWebRPackages()` (see `webr-app.js` for the whole code):
+
+```js
+import * as RSupport from "./rsupport.js";
+
+export async function packagesToGrid(ctx, id) {
+
+	const obj = await RSupport.getWebrPackages(ctx) // 👈🏽 here's where we call our wrapped R code
+
+	const gridObj = webRDataJsDfToGrid(obj); // see `webr-app.js` for how we need to transform the data to work with Grid.js.
+
+	new Grid({
+		columns: obj.names,
+		data: gridObj,
+		pagination: {
+			limit: 20,
+			summary: true
+		},
+		fixedHeader: true,
+		search: true,
+		language: {
+			'search': {
+				'placeholder': '🔍 📦 Search...'
+			}
+		}
+	}).render(document.getElementById(id));
+
+}
+```
 
 ### Headers
 
