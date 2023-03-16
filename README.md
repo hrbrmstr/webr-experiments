@@ -190,6 +190,12 @@ I made the mistake of thinking I knew everything and made a dumb, complex, ggplo
 
 I also _seriously_ reduced the complexity of this to let y'all focus on the plotting thing.
 
+(UPDATE)
+
+I added in the files from {basetheme} and rejiggered the plots a bit.
+
+![basetheme example persp() plot](imgs/basetheme-ex.png)
+
 ```plain
 ggwebr
 ├── css
