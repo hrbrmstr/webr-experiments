@@ -6,7 +6,7 @@
 >
 >If you are _still_ reading, consider [using this awesome WebR Quarto extension](https://github.com/coatless/quarto-webr) instead.
 >
->If you are _stil_, _still_ reading, def don't do the "everything in one directory" madness I did on my deployed examples. I'll be adding more to this repo to provide a better strategy for managing these projects.
+>If you are _stil_, _still_ reading, def don't do the "everything in one directory" madness I did on my initially deployed examples. I'll be adding more to this repo to provide a better strategy for managing these projects.
 
 I went bonkers over the release of WebR on Thursday. These are some of my experiments. I'll continue to add some, and also make some that aren't as "toy"ish.
  
@@ -16,7 +16,7 @@ The associated directories are named pretty obviously.
 
 The `file` references are where the code lives. Honesty, you can just view-source in your browser, too.
 
-I was lazy and had like _everything_ in the same directory (WebR, JS, CSS, CSV, etc). That's pretty dumb, but I've only got so much energy these days thanks to everyone in the U.S. pretending the pandemic is over (yay long covid). 
+I was initiall lazy and had like _everything_ in the same directory (WebR, JS, CSS, CSV, etc). That's pretty dumb, but I've only got so much energy these days thanks to everyone in the U.S. pretending the pandemic is over (yay long covid). 
 
 ## Days 1 & 2 
 
