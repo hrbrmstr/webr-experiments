@@ -83,7 +83,9 @@ Made a full on, non-janky app with instructions on how to install webr site-wide
 
 <https://github.com/hrbrmstr/webr-app>
 
-## Day???? webr-pkgs
+## Day???? 
+
+`webr-pkgs/`
 
 The `webr-pkgs/` directory contains another small WebR-powered application that shows how to wrap an R function for calling from JS. You can [see it in action](https://rud.is/w/webr-pkgs/) before reading.
 
@@ -178,6 +180,29 @@ export async function packagesToGrid(ctx, id) {
 }
 ```
 
+`ggwebr/`
+
+This was my (successful!) attempt to figure out how to get stuff from a WebR `canvas` device to an HTML DOM `<canvas>`.
+
+This thing lets you select form 3 {base} `plot()`s. You can play with it here: <https://rud.is/w/ggwebr/>.
+
+I made the mistake of thinking I knew everything and made a dumb, complex, ggplot2 example. After a series of miserable failures, I decided to see how Balamuta did it in Quarto WebR and learned _just enough_ to be dangerous. There are lots of annotations in `main.js` about this.
+
+I also _seriously_ reduced the complexity of this to let y'all focus on the plotting thing.
+
+```plain
+ggwebr
+├── css
+│   ├── app.css                # app-specific; mostly for centering stuff
+│   └── simple.min.css         # K.I.S.S.
+├── index.html                 # SUPER minimal; don't judge my `<center>`s. This is hack code.
+├── main.js                    # where the wild things are
+├── webr-serviceworker.js      #
+├── webr-serviceworker.js.map  #
+├── webr-worker.js             # I'm planning on always keeping these close so if I'm ever
+└── webr-worker.js.map         # in need of shoving some app somewhere where I need to rely on CDN WebR, I can do it superfast.
+```
+
 ### Headers
 
 IT IS REALLY IMPORTANT TO GO HERE AND READ IT: <https://docs.r-wasm.org/webr/latest/serving.html>
@@ -195,10 +220,29 @@ Also, this `Cache-Control` heading appears to help keep things under `/webr` (YM
 Cache-Control: public, max-age=604800
 ```
 
-
 ## "Pro"tips
 
 Yeah, "pro". _Sure._ More like "hrbrhacks". 
+
+### Is the fast cross-origin thing working?
+
+```
+console.log(`are we cross-origin isolates? ${crossOriginIsolated}`);
+```
+
+### LEVELED UP CACHING
+
+If you're hosting the webr tarball locally (please don't give telemetry to any company unless you rly have to) and run nginx, then DO THIS:
+
+```
+location ^~ /webr {
+  etag on;
+  expires max;
+  add_header Cache-Control "public, max-age=31536000, immutable";
+}
+```
+
+You can always unset it, but I've managed to get sub-400ms webR context re-instantiation times with that. First one always has to load up the files.
 
 ### Seeing What Packages Are Available
 

@@ -3,6 +3,9 @@
 ## 2023-03-15
 
 - info on how to wrap an R function and provide a "library" of R functions
+- got plot devices working!
+- added tip on how to tell if your cross origin thing is working
+- more info on caching
 
 ## 2023-03-12
 

@@ -1,0 +1,31 @@
+.webr-table {
+	font-family: monospace;
+	margin-left: auto;
+  margin-right: auto;
+}
+
+#loading, #read, #packages, #source {
+	text-align: center;
+}
+
+table.webr-table tbody td {
+	text-align: right;
+}
+
+#base-canvas {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#plot-select {
+	font-family: monospace;
+	margin-left: auto;
+  margin-right: auto;
+}
+
+#tbl {
+	font-family: monospace;
+	margin-left: auto;
+  margin-right: auto;
+	width: 100%;
+}
