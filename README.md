@@ -203,6 +203,11 @@ ggwebr
 │   └── simple.min.css         # K.I.S.S.
 ├── index.html                 # SUPER minimal; don't judge my `<center>`s. This is hack code.
 ├── main.js                    # where the wild things are
+├── r
+│   ├── basetheme.R						 # from {basetheme}
+│   ├── coltools.R             # from {basetheme}
+│   ├── themes.R               # from {basetheme}
+│   └── utils.R                # from {basetheme}
 ├── webr-serviceworker.js      #
 ├── webr-serviceworker.js.map  #
 ├── webr-worker.js             # I'm planning on always keeping these close so if I'm ever
