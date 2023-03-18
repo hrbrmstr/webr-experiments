@@ -214,6 +214,23 @@ ggwebr
 └── webr-worker.js.map         # in need of shoving some app somewhere where I need to rely on CDN WebR, I can do it superfast.
 ```
 
+### 2023-03-18
+
+`pkgbenchmarks`
+
+![benchmarks](imgs/bench.png)
+
+I have an example of using {ggplot2} in WebR (VanillaJS) coming, but after making that, I had a question about WebR and performance as it relates to loading and using WASM R packages, and it sent me down a rabbit hole.
+
+The `pkgbenchmarks/` has only two files, and is described in [this blog post](https://rud.is/b/?p=13824&preview=true).
+
+```plain
+├── index.html
+└── style.css
+```
+
+TL;DR: most packages load and `library()` in well-under one second. Some — like {ggplot2} — are monsters.
+
 ### Headers
 
 IT IS REALLY IMPORTANT TO GO HERE AND READ IT: <https://docs.r-wasm.org/webr/latest/serving.html>

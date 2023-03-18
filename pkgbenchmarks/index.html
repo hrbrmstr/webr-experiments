@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="WebR Package Loading And Instantiating Benchmarks">
+<meta name="author" content="@hrbrmstr">
+ 
+<title>Benchmarks</title>
+
+<link rel="stylesheet" href="style.css" type="text/css">
+
+<script type="module">
+
+// our Observable Plot styles; 
+// makes it easier to tweak if we keep it out of the Plot code
+const benchStyle = {
+  color: "#ffbb6c",
+  backgroundColor: "#262335",
+  fontSize: "13pt",
+};
+
+import microlight from 'https://cdn.jsdelivr.net/npm/microlight@0.0.7/+esm';
+import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
+import { json } from 'https://cdn.jsdelivr.net/npm/d3-fetch@3.0.1/+esm'
+
+const latestPackages = await json("https://rud.is/data/webr-packages.json")
+
+const all_pkgs = latestPackages.map(d => d.package);
+document.getElementById("pkg-ct").textContent = all_pkgs.length;
+
+/**
+ * This turns `obj2export` into JSON and will be given `dlname` (it auto-append a `.json`)
+ * after the browser downloads it. It automatically downloads the file "in the background".
+ * 
+ */
+function saveAsJSON(obj2export, dlname) {
+
+	// this makes our "file" (use a different technique for stuff over ~1MB)
+	var dataToDL = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj2export));
+
+	// we have to simulate a tap on an anchor element to force the d/l 
+	var anchor = document.createElement('a');
+
+	anchor.setAttribute("href", dataToDL);
+	anchor.setAttribute("target", "_blank"); // "in background"
+	anchor.setAttribute("download", dlname + ".json");
+
+	// until you do this, it's not "rendered"
+	document.body.appendChild(anchor); 
+
+	anchor.click();
+
+	anchor.remove();
+
+}
+
+/**
+ * This will take an array of named objects (which shows my non-JS roots since
+ * I should have just said "string/value" hashtable or "string/value" dictionary).
+ * It expects `tableElement` to be "tidy", and you can supply the headers since I
+ * was too lazy to do what the epic authors of R's {janitor} did and be more helpful.
+ * 
+ * NOTE: you pass in an already selected table element.
+ */
+function tableToArray(tableElement, headers = []) {
+  const rows = [];
+  const tableRows = tableElement.querySelectorAll("tr");
+
+	let headerCells;
+
+	if (headers.length == 0) { // Get headers from the first row
+		
+		const headerCells = tableRows[0].querySelectorAll("th");
+		for (const cell of headerCells) {
+			headers.push(cell.textContent.trim());
+		}
+	} else { // use ours
+		headerCells = headers;
+	}
+
+  // Loop through remaining rows and create objects
+  for (let i = 1; i < tableRows.length; i++) {
+    const row = {};
+    const rowCells = tableRows[i].querySelectorAll("td");
+    for (let j = 0; j < rowCells.length; j++) {
+      row[headers[j]] = rowCells[j].textContent.trim();
+		}
+    rows.push(row);
+  }
+  return rows;
+}
+
+// Doing this just for show. You can use the built-in browser variable
+// `isolated` to see if the context is "secure" and will support ArrayBuffer
+// websocket comms vs the slower version. We don't really need it in this example,
+// but I wanted to show how to test for it (so you can, say, let users know what
+// they are experiencing on your page may or may not be in a degraded performance
+// mode). The second line updates a text node in the DOM.
+let isolated = document.getElementById("isolated");
+isolated.innerText = crossOriginIsolated ? "✅ Context is cross-origin isolated!" : "❌ Context is not cross-origin isolated."
+
+var pkgs = all_pkgs;
+var processed = [];
+
+// This creates an iframe on the fly and adds it to this page's DOM.
+// NOTE: `credentialless` IS IMPORTANT! Without it, the WebR context
+// in the iframe won't be able to use ArrayBuffers.
+function addPackageFrame(pkg) {
+
+	var iframe = document.createElement('iframe');
+	iframe.id = pkg;
+	iframe.allowtransparency = true;
+	iframe.seamless = true;
+	iframe.credentialless = true;
+
+	var htm = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="module">
+// helper to make a number with only two decimal digits
+Number.prototype.round = function(dec) {
+  return Number((Math.round(this + "e" + dec)  + "e-" + dec));
+}
+
+// our creator!
+const parent = window.parent.document,
+
+// we're going to update our creator's table
+// with who we are (i.e., what package is being 
+// benchmarked), whether the package load +
+// instantiate worked, and how long it took
+table = parent.getElementById('bench-body'),
+row = table.insertRow(0),
+th0 = row.insertCell(0),
+th1 = row.insertCell(1),
+th2 = row.insertCell(2);
+th0.textContent = "…";
+th1.textContent = "${pkg}";
+th2.textContent = "⏳"
+const timerStart = performance.now();
+
+let status = "✅" // assume the best!
+
+import { WebR } from '/webr/webr.mjs';
+
+try {
+  globalThis.webR = new WebR({ WEBR_URL: "/webr/", SW_URL: "/w/bench/",});
+  await globalThis.webR.init();
+  await globalThis.webR.installPackages(['${pkg}'])
+  await globalThis.webR.evalRVoid('library(${pkg})')
+} catch (err) {
+  window.parent.console.error(err);
+  status = "❌"
+}
+
+th0.textContent = status; // set the good/bad news in the parent
+
+const timerEnd = performance.now();
+const delta = timerEnd - timerStart;
+th2.textContent = delta.round(2).toFixed(2);
+window.parent.postMessage('${pkg}', '*');
+<\/script>
+</head>
+<body>
+</body>
+</html>
+`;
+	
+	document.body.appendChild(iframe);
+
+	// nothing will happen in the iframe w/o this
+	iframe.contentWindow.document.open();
+	iframe.contentWindow.document.write(htm);
+	iframe.contentWindow.document.close();
+
+	processed.push(pkg)
+
+}
+
+// We're exploiting the ability to pass messages back and forth
+// between a parent document and child iframe. This lets our
+// dynamically created iframe tell us when it is done loading the
+// package so we can kill it and make a new one.
+window.addEventListener('message', e => {
+
+	// our deliberately created "message" back is just the package
+	// name, so we test to see if that's what's in the message event
+	// `data` slot (er, "field" — my non-JS roots show again!) by
+	// seeing if it is in our `processed` package array (above).
+	if (!processed.includes(e.data)) return;
+
+	const pkg = e.data;
+
+	// delete it to kill the WebR context and free up resources
+	const iframe = document.getElementById(`${pkg}`);
+	if (iframe) iframe.parentElement.removeChild(iframe);
+
+	if (pkgs.length > 0) { // we are not done yet
+		const nextPkg = pkgs.shift(); // get next package
+	  addPackageFrame(nextPkg); // lather/rinse/repeat
+	} else { // we are done!
+
+		// we need the table data regardless of ^^
+		const table = document.getElementById('bench');
+		const webrPkgBench = tableToArray(table, ["ok", "pkg", "duration"])
+		webrPkgBench.map(d => {
+			d.duration = parseFloat(d.duration) // be nice and convert the text to a number
+			return(d)
+		})
+
+		// should we download the results?
+		const checkbox = document.getElementById("dl-results");
+    const isChecked = checkbox.checked;
+		if (isChecked) { saveAsJSON(webrPkgBench, "webr-pkg-bench") }
+
+		// we are going to surprise firt-time users with a histogram
+		// of load times! Set the plot title.
+		document.getElementById("title").innerText = "Package Load Time Distribution";
+
+		const vis = document.getElementById("vis");
+		vis.style.paddingTop = "30px";
+		vis.append(
+			Plot.plot({
+				width: 800,
+				height: 500,
+				marginTop: 50,
+				margin: 70,
+				style: benchStyle,
+				x: {
+					label: "📦 install + library() time (ms)     ",
+					labelOffset: 50,
+				},
+				y: {
+					grid: true,
+					label: "# 📦",
+					labelOffset: 50,
+					labelAnchor: "top",
+				},
+				marks: [
+					Plot.rectY(
+						webrPkgBench,
+						Plot.binX(
+							{ y: "count" },
+							{ x: "duration", thresholds: "freedman-diaconis" }
+						)
+					),
+					Plot.ruleY([0])
+				]
+			})
+		)
+	}
+
+})
+
+/**
+ * We will call this after the tap on the button.
+ * It disables our "form" elements since you really
+ * should not run the benchmark again until the 
+ * browser tab is reset. We're doing alot of evil things
+ * to broweser dynamically allocated memory, and we
+ * want a clean environment to work from.
+ */
+function beginBenchmark() {
+
+	pkgs = all_pkgs;
+	processed = [];
+  const firstPkg = pkgs.shift();
+
+	document.getElementById("start").disabled = true;
+  document.getElementById("dl-results").disabled = true;
+
+  addPackageFrame(firstPkg);
+
+}
+
+document.getElementById("start").onclick = beginBenchmark;
+
+microlight.reset();
+</script>
+
+</head>
+
+<body>
+<h2>WebR WASM Package Install + <code>library()</code> Benchmarks</h1>
+
+<p>This page loads all available R WASM packages (<span id="pkg-ct">--</span> as of this day) in separate iframes and adds the <code>install</code> + <code>library()</code> time to the table.</p>
+<p>It (this parent page) adds one hidden child iframe to the page, waits for the child iframe to finish loading, then removes it, and moves on to the next package.</p>
+<p>This is a pared down version of the WebR part of the code that is populated in the iframe:</p>
+
+<div class="microlight">import { WebR } from '/webr/webr.mjs';
+globalThis.webR = new WebR({ WEBR_URL: "/webr/", SW_URL: "/w/bench/",});
+await globalThis.webR.init();
+await globalThis.webR.installPackages(['PACKAGE'])
+await globalThis.webR.evalRVoid('library(PACKAGE)')</div>
+
+<p>Handling the iframes this way should avoid resource contention and exhaustion in most browsers.</p>
+<p>For more accurate results, ensure this is the only tab open in your browser and refresh the page 1-2x to ensure all the packages are in the local cache.</p>
+<p><i>Not all packages seem to work!</i> You'll see an ❌ when a package install or load fails, with a corresponding error message in the Developer Tools console. It usally means that the <code>library()</code> call failed.</p>
+<p><b>RELOAD</b> the page to re-perform the benchmarks.</p>
+
+<p id="isolated"></p>
+
+<p><center><label for="dl-results"><input type="checkbox" id="dl-results"/> Download results?<br/><br/></label> <button id="start" >Begin Benchmark</button></center></p>
+
+<h3 style="text-align:center" id="title"></h3>
+
+<center><div id="vis-wrapper"><div id="vis"></div></div></center>
+
+<center><table id="bench">
+	<thead>
+		<tr valign="bottom"><th>OK</th><th>Package</th><th>Load<br/>time (ms)</th></tr>
+	</thead>
+	<tbody id="bench-body">
+	</tbody>
+</table></center>
+
+</body>
+
+</html>

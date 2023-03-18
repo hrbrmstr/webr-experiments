@@ -1,0 +1,104 @@
+/* Basic reset */
+html {
+  box-sizing: border-box;
+  font-size: 100%;
+  line-height: 1.5;
+	height: auto !important;
+  padding-bottom: 700px !important;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: #fff;
+	font-size:1;
+  color: #333;
+  max-width: 50rem; /* Adjust this value to set a maximum width */
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+p {
+  margin: 0 0 1rem 0;
+}
+
+a {
+  color: #1a0dab;
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  text-decoration: underline;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1c1c1e;
+    color: #f2f2f2;
+  }
+
+  a {
+    color: #73bfff;
+  }
+}
+
+/* WCAG compliant */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid #4a90e2; /* Adjust the color to match your design */
+}
+
+#isolated {
+	text-align: center;
+}
+
+#vis-wrapper {
+	padding-bottom: 12pt;
+}
+
+#vis {
+	background-color: #262335;
+}
+
+iframe {
+	width: 1px;
+	min-width: 100%;
+	border-width: 0px;
+	height: 0px;
+}
+
+th:nth-child(2),
+th:nth-child(3) {
+	text-align: right;
+	padding-left: 6px;
+	padding-right: 6px;
+}
+
+td:nth-child(2),
+td:nth-child(3) {
+	font-family: monospace;
+	text-align: right;
+	padding-left: 6px;
+	padding-right: 6px;
+}
+
+.microlight {
+	font-family: monospace;
+	white-space: pre;
+	padding: 1rem;
+	margin-bottom: 1rem;
+	border: 0.5px solid currentcolor;
+}

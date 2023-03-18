@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-03-18
+
+- added package load/library benchmarks example
+  
 ## 2023-03-16
 
 ### Updated
