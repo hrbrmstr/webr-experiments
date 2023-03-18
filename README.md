@@ -222,7 +222,7 @@ ggwebr
 
 I have an example of using {ggplot2} in WebR (VanillaJS) coming, but after making that, I had a question about WebR and performance as it relates to loading and using WASM R packages, and it sent me down a rabbit hole.
 
-The `pkgbenchmarks/` has only two files, and is described in [this blog post](https://rud.is/b/?p=13824&preview=true).
+The `pkgbenchmarks/` has only two files, and is described in [this blog post](https://rud.is/b/2023/03/18/webr-wasm-r-pack…king-rabbit-hole).
 
 ```plain
 ├── index.html
