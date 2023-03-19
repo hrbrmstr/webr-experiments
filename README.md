@@ -1,5 +1,7 @@
 # hrbrmstr's WebR (webR?) Experiments
 
+> NOTE:I may rescind 1-2 of these preambling points after figuring our "ReefR" (see below).
+> 
 >Before you read this, please reconsider your life choices and wait for WASM Shiny to support WebR like it does Pyodide if you really want Reactive apps.
 >
 >If you're still reading, also consider using React. George (et al.) has an example of that in the docs and in the WebR repo. I despise giant web frameworks and always try to do what I can in VanillaJS and D3 (or Observable) if at all possible. But, I'm also pretty messed up.
