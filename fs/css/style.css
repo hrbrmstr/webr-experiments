@@ -1,43 +1,52 @@
 /* Basic reset */
 html {
-  box-sizing: border-box;
-  font-size: 100%;
-  line-height: 1.5;
+	box-sizing: border-box;
+	font-size: 100%;
+	line-height: 1.5;
 	height: auto !important;
-  padding-bottom: 700px !important;
+	padding-bottom: 700px !important;
 }
 
-*, *:before, *:after {
-  box-sizing: inherit;
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
 }
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  background-color: #f2f2f2;
-	font-size:1;
-  color: #1c1c1e;
-  max-width: 50rem; /* Adjust this value to set a maximum width */
-  margin: 0 auto;
-  padding: 1rem;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	background-color: #f2f2f2;
+	font-size: 1;
+	color: #1c1c1e;
+	max-width: 50rem;
+	/* Adjust this value to set a maximum width */
+	margin: 0 auto;
+	padding: 1rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin: 0 0 1rem 0;
-  font-weight: 600;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0 0 1rem 0;
+	font-weight: 600;
 }
 
 p {
-  margin: 0 0 1rem 0;
+	margin: 0 0 1rem 0;
 }
 
 a {
-  color: #1a0dab;
-  text-decoration: none;
+	color: #1a0dab;
+	text-decoration: none;
 }
 
-a:hover, a:focus {
-  text-decoration: underline;
+a:hover,
+a:focus {
+	text-decoration: underline;
 }
 
 text-area {
@@ -46,33 +55,42 @@ text-area {
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
-  body, textarea {
-    background-color: #1c1c1e;
-    color: #f2f2f2;
-  }
 
-  a {
-    color: #73bfff;
-  }
+	body,
+	textarea {
+		background-color: #1c1c1e;
+		color: #f2f2f2;
+	}
+
+	a {
+		color: #73bfff;
+	}
 }
 
 /* WCAG compliant */
 :focus:not(:focus-visible) {
-  outline: none;
+	outline: none;
 }
 
 :focus-visible {
-  outline: 3px solid #4a90e2; /* Adjust the color to match your design */
+	outline: 3px solid #4a90e2;
+	/* Adjust the color to match your design */
+}
+
+#message {
+	margin-left: auto;
+	margin-right: auto;
+	color: #4a90e2;
 }
 
 textarea {
 	font-size: 1.025rem;
 	width: 100%;
-  height: 400px;
+	height: 400px;
 	padding: 12pt;
 	margin-top: 1rem;
-	margin-bottom:1.5rem;
-  white-space: pre;
+	margin-bottom: 1.5rem;
+	white-space: pre;
 	overflow-x: auto;
 }
 
@@ -95,7 +113,8 @@ div#read-csv-output {
 	overflow-x: scroll;
 }
 
-pre, code {
+pre,
+code {
 	font-size: 1.025rem;
 	font-family: monospace;
 }

@@ -32,6 +32,7 @@ let rFileTree = store({ files: [] });
 let localFileTree = store({ files: [] });
 let neonFileTree = store({ files: [] });
 let readCsvOutput = store({ text: [] })
+let message = store({ text: "Executing WebR chunks…" })
 
 function showDirectoryTree() {
 	const { files } = fileTree;
@@ -63,11 +64,19 @@ function showReadCsvOutput() {
 	return `${list}`;
 }
 
+function showMessage() {
+	const { text } = message;
+	return `${text}`
+}
+
 component('#allfiles', showDirectoryTree);
 component('#rfiles', showRDirectoryTree);
 component('#localfiles', showLocalDirectoryTree);
 component('#neonfiles', showNeonDirectoryTree);
 component('#read-csv-output', showReadCsvOutput);
+component('#message', showMessage);
+
+message.text = "Loading WebR…";
 
 // get to work!
 console.time('Execution Time');
@@ -83,14 +92,20 @@ console.log("Initializing WebR…")
 await globalThis.webR.init();
 console.log("WebR Initialized!")
 
+message.text = "WebR Initialized!";
+
 console.timeEnd('Execution Time');
 
 let res = await globalThis.webR.evalR("getwd()");
 let out = await res.toJs();
 console.log(out);
 
+message.text = "Storing JSON in WebR FS…";
+
 // store some stuff in the WebR filesystem
 res = await globalThis.webR.evalRVoid("download.file('https://rud.is/data/webr-packages.json', 'webr-packages.json')");
+
+message.text = "Storing a font in WebR FS…";
 
 await fetch("./f/roboto-condensed-regular.ttf").then(async (d) => {
 	console.log("writing file")
@@ -124,6 +139,8 @@ const decoder = new TextDecoder();
 document.getElementById("random-r-file").innerText = decoder.decode(randomRFileRaw);
 console.log(randomRFilePath)
 
+message.text = "Loading an egregiously large ZIP file of CSVs into WebR FS…";
+
 // load up a bunch of files for a course/tutorial
 webR.evalRVoid('download.file("https://ndownloader.figshare.com/files/3701572", "NEONDSMetTimeSeries.zip")')
 webR.evalRVoid('unzip("NEONDSMetTimeSeries.zip")')
@@ -144,3 +161,5 @@ res = await readCsvShelter.captureR(
 });
 
 readCsvOutput.text = res.output.filter(d => d.type == "stdout").map(d => d.data)
+
+message.text = "Ready!";

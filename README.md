@@ -239,7 +239,13 @@ Some blathering on working with the WebR filesystem.
 
 You can read it at <https://rud.is/w/fs/>.
 
-I also used a new fancy thing which lets me write the experiments in Markdown. It comes along for the ride with the example.
+You may want to poke at this one for more than just WebR stuff.
+
+Fiddling with `document.getElementById()` stuff is a pain. So I'm using a super tiny reactive framework called [Reef](https://reefjs.com/getting-started/). 
+
+I also really hate writing HTML so I spent some time jury rigging a system that lets me write these in Markdown. Just look at the source and drop questions (if you have any) in the issues of `webr-experiments`.
+
+Reef + Markdown-It means I've _kind of made a mini reactive notebook/Shiny environment for WebR_.
 
 ### Headers
 
