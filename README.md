@@ -317,6 +317,10 @@ webr-reef
 └── webr-worker.js.map
 ```
 
+`reefr-template`
+
+A submodule (just go to <https://github.com/hrbrmstr/reefr-template>) for a starter ReefR app template.
+
 ### Headers
 
 IT IS REALLY IMPORTANT TO GO HERE AND READ IT: <https://docs.r-wasm.org/webr/latest/serving.html>

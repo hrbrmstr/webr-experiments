@@ -2,7 +2,8 @@
 
 ## 2023-03-19
 
-- added ReeR example
+- new `reefr-template` submodule making it easier to get started
+- added ReefR example
 - added examples on how to work with the WebR filesystem.
 
 ## 2023-03-18

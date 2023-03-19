@@ -1,3 +1,6 @@
 [submodule "webr-app"]
 	path = webr-app
 	url = git@github.com:hrbrmstr/webr-app
+[submodule "reefr-template"]
+	path = reefr-template
+	url = git@github.com:hrbrmstr/reefr-template
