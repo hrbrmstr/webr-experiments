@@ -231,6 +231,16 @@ The `pkgbenchmarks/` has only two files, and is described in [this blog post](ht
 
 TL;DR: most packages load and `library()` in well-under one second. Some — like {ggplot2} — are monsters.
 
+### 2023-03-19
+
+`fs`
+
+Some blathering on working with the WebR filesystem.
+
+You can read it at <https://rud.is/w/fs/>.
+
+I also used a new fancy thing which lets me write the experiments in Markdown. It comes along for the ride with the example.
+
 ### Headers
 
 IT IS REALLY IMPORTANT TO GO HERE AND READ IT: <https://docs.r-wasm.org/webr/latest/serving.html>

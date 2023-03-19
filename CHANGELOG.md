@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-03-19
+
+- added examples on how to work with the WebR filesystem.
+
 ## 2023-03-18
 
 - added package load/library benchmarks example
