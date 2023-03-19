@@ -239,6 +239,50 @@ Some blathering on working with the WebR filesystem.
 
 You can read it at <https://rud.is/w/fs/>.
 
+```
+fs
+├── css
+│   └── style.css # slightly different style sheet this time
+├── f
+│   ├── NEON-DS-Met-Time-Series # read the post to see why this is here
+│   │   └── HARV
+│   │       ├── Daylength
+│   │       │   ├── DayLengthSource_MetaData.txt
+│   │       │   ├── DayLength_PetershamMass_2015.csv
+│   │       │   ├── DayLength_Petersham_Mass_2009.txt
+│   │       │   ├── DayLength_Petersham_Mass_2010.txt
+│   │       │   ├── DayLength_Petersham_Mass_2011.txt
+│   │       │   └── DayLength_Petersham_Mass_2015.txt
+│   │       ├── FisherTower-Met
+│   │       │   ├── Met_HARV_15min_2009_2011.csv
+│   │       │   ├── Met_HARV_Daily_2009_2011.csv
+│   │       │   ├── Temp_HARV_Daily_09_11.csv
+│   │       │   ├── Temp_HARV_Monthly_09_11.csv
+│   │       │   ├── hf001-02-annual-m.csv
+│   │       │   ├── hf001-02-annual-m_Metadata.txt
+│   │       │   ├── hf001-04-monthly-m.csv
+│   │       │   ├── hf001-06-daily-m-NoJD.csv
+│   │       │   ├── hf001-06-daily-m.csv
+│   │       │   ├── hf001-06-daily-m_Metadata.txt
+│   │       │   ├── hf001-10-15min-m.csv
+│   │       │   └── hf001-10-15min-m_Metadata.txt
+│   │       └── NDVI
+│   │           └── meanNDVI_HARV_2011.csv
+│   └── roboto-condensed-regular.ttf
+├── img
+│   └── webr-filesystem.png # I finally have OG tags on one experiment!
+├── index.html  # super minimal because of the next line
+├── index.md    # did i mention that I wrote the post in markdown and it renders on the fly?
+├── js
+│   ├── reef.es.min.js     # super minimal reactive framework
+│   └── reef.es.min.js.map
+├── main.js                # all the logic is in here
+├── webr-serviceworker.js
+├── webr-serviceworker.js.map
+├── webr-worker.js
+└── webr-worker.js.map
+```
+
 You may want to poke at this one for more than just WebR stuff.
 
 Fiddling with `document.getElementById()` stuff is a pain. So I'm using a super tiny reactive framework called [Reef](https://reefjs.com/getting-started/). 
