@@ -1,0 +1,135 @@
+/* Basic reset */
+html {
+  box-sizing: border-box;
+  font-size: 100%;
+  line-height: 1.5em;
+	height: auto !important;
+  padding-bottom: 700px !important;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: #f2f2f2;
+	font-size:1;
+  color: #1c1c1e;
+  max-width: 50rem; /* Adjust this value to set a maximum width */
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+p {
+  margin: 0 0 1rem 0;
+}
+
+a {
+  color: #1a0dab;
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  text-decoration: underline;
+}
+
+text-area {
+	box-sizing: border-box;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body, textarea {
+    background-color: #1c1c1e;
+    color: #f2f2f2;
+  }
+
+  a {
+    color: #73bfff;
+  }
+}
+
+/* WCAG compliant */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid #4a90e2; /* Adjust the color to match your design */
+}
+
+#message {
+	margin-left: auto;
+	margin-right: auto;
+	color: #4a90e2;
+}
+
+blockquote p {
+	color: #ff7249;
+	font-style: italic;
+}
+
+textarea {
+  cursor: not-allowed;
+	font-size: 1.025rem;
+	width: 100%;
+  height: 400px;
+	padding: 12pt;
+	margin-top: 1rem;
+	margin-bottom:1.5rem;
+  white-space: pre;
+	overflow-x: auto;
+}
+
+textarea#localfiles {
+	height: auto;
+}
+
+textarea#neonfiles {
+	min-height: 300px;
+	height: auto;
+}
+
+div#random-r-file {
+	max-height: 300px;
+	overflow-x: scroll;
+}
+
+div#read-csv-output {
+	max-height: 400px;
+	overflow-x: scroll;
+}
+
+pre, code {
+	font-size: 1.025rem;
+	font-family: monospace;
+}
+
+.microlight {
+	font-size: 1.025rem;
+	font-family: monospace;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	padding-left: 6px;
+	overflow-x: scroll;
+	white-space: pre;
+	background-color: #001e38;
+	color: #c6cdd7;
+	margin-bottom: 1.5rem;
+}
+
+.footnotes-sep {
+	border-width: 0.5px;
+	border-color: #4a6d88;
+}
+
+.footnote-item p {
+	font-style: italic;
+}

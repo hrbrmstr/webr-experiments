@@ -291,6 +291,30 @@ I also really hate writing HTML so I spent some time jury rigging a system that 
 
 Reef + Markdown-It means I've _kind of made a mini reactive notebook/Shiny environment for WebR_.
 
+`webr-reef`
+
+Super-simplified example of WebR reactivity with the Reef framework. I guess that means this is ReefR?
+
+Demo: <https://rud.is/w/webr-reef/>
+
+```
+webr-reef
+├── css
+│   └── style.css
+├── img
+│   └── webr-datasets.png
+├── index.html
+├── index.md
+├── main.js
+├── modules
+│   ├── microlight.min.js
+│   └── reef.es.min.js
+├── webr-serviceworker.js
+├── webr-serviceworker.js.map
+├── webr-worker.js
+└── webr-worker.js.map
+```
+
 ### Headers
 
 IT IS REALLY IMPORTANT TO GO HERE AND READ IT: <https://docs.r-wasm.org/webr/latest/serving.html>
